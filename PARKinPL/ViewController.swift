@@ -13,7 +13,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var separatorView: UIView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchButton: UIButton!
-
+    @IBOutlet weak var locateButton: UIButton!
+    
     private var selectedCity: String? {
         didSet { updateNavTitle() }
     }
@@ -44,16 +45,16 @@ class ViewController: UIViewController {
     }
 
     // ✅ 스토리보드 segue 로 넘어갈 때 데이터 주입
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showCityPicker",
-           let picker = segue.destination as? CityPickerViewController {
-            picker.cities = ["Katowice", "Wrocław", "Warszawa", "Kraków", "Gdańsk", "Łódź", "Poznań"]
-            picker.preselectedCity = selectedCity
-            picker.onSelect = { [weak self] city in
-                self?.selectedCity = city
-            }
-        }
-    }
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        if segue.identifier == "showCityPicker",
+//           let picker = segue.destination as? CityPickerViewController {
+//            picker.cities = ["Katowice", "Wrocław", "Warszawa", "Kraków", "Gdańsk", "Łódź", "Poznań"]
+//            picker.preselectedCity = selectedCity
+//            picker.onSelect = { [weak self] city in
+//                self?.selectedCity = city
+//            }
+//        }
+//    }
 
     @IBAction func searchTapped(_ sender: UIButton) {
         print("Search tapped")
