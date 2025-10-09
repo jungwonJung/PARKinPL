@@ -44,7 +44,7 @@ class ViewController: UIViewController {
         searchButton.layer.cornerRadius = 14
     }
 
-    // ✅ 스토리보드 segue 로 넘어갈 때 데이터 주입
+    // 스토리보드 segue 로 넘어갈 때 데이터 주입
 //    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 //        if segue.identifier == "showCityPicker",
 //           let picker = segue.destination as? CityPickerViewController {
