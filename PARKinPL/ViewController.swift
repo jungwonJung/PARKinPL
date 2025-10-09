@@ -21,6 +21,8 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        print("✅ appeared:", type(of: self))
+            view.backgroundColor = .systemYellow // 눈에 띄게
         view.backgroundColor = .systemBackground
         updateNavTitle()
         styleSearchButton()
