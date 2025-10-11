@@ -1,44 +1,33 @@
-//
-//  ViewController.swift
-//  PARKinPL
-//
-//  Created by JungWonJung on 05/10/2025.
-//
-
 import UIKit
 import MapKit
+import CoreLocation
 
-class ViewController: UIViewController {
+class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
 
     @IBOutlet weak var separatorView: UIView!
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var searchButton: UIButton!
-    @IBOutlet weak var locateButton: UIButton!
-    
-    private var selectedCity: String? {
-        didSet { updateNavTitle() }
-    }
+    @IBOutlet weak var currentLocationButton: UIButton!
 
+    // MARK: - Location
+    private let locationManager = CLLocationManager()
+    private var isCentering = false
+
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        print("✅ appeared:", type(of: self))
-            view.backgroundColor = .systemYellow // 눈에 띄게
         view.backgroundColor = .systemBackground
-        updateNavTitle()
+
         styleSearchButton()
+
+        mapView.delegate = self
+        mapView.showsUserLocation = true
+
+        locationManager.delegate = self
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
-    private func updateNavTitle() {
-        navigationItem.title = selectedCity ?? "PARKinPL"
-    }
-
-    private func styleSeparator() {
-        separatorView.layer.shadowColor = UIColor.black.cgColor
-        separatorView.layer.shadowOpacity = 0.12
-        separatorView.layer.shadowRadius = 4
-        separatorView.layer.shadowOffset = CGSize(width: 0, height: 2)
-    }
-
+    // MARK: - UI styling
     private func styleSearchButton() {
         searchButton.setTitle("Search", for: .normal)
         searchButton.backgroundColor = .label
@@ -46,20 +35,104 @@ class ViewController: UIViewController {
         searchButton.layer.cornerRadius = 14
     }
 
-    // 스토리보드 segue 로 넘어갈 때 데이터 주입
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        if segue.identifier == "showCityPicker",
-//           let picker = segue.destination as? CityPickerViewController {
-//            picker.cities = ["Katowice", "Wrocław", "Warszawa", "Kraków", "Gdańsk", "Łódź", "Poznań"]
-//            picker.preselectedCity = selectedCity
-//            picker.onSelect = { [weak self] city in
-//                self?.selectedCity = city
-//            }
-//        }
-//    }
-
+    // MARK: - Actions
     @IBAction func searchTapped(_ sender: UIButton) {
-        print("Search tapped")
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+    }
+
+    @IBAction func locateTapped(_ sender: UIButton) {
+        guard !isCentering else { return }
+        isCentering = true
+        currentLocationButton.isEnabled = false
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        ensureLocationAuthorizedThenCenter()
+    }
+
+    // MARK: - Location helpers
+    private func ensureLocationAuthorizedThenCenter() {
+        guard CLLocationManager.locationServicesEnabled() else {
+            showLocationDeniedAlert()
+            finishCentering()
+            return
+        }
+
+        let status: CLAuthorizationStatus
+        if #available(iOS 14.0, *) {
+            status = locationManager.authorizationStatus
+        } else {
+            status = CLLocationManager.authorizationStatus()
+        }
+
+        switch status {
+        case .notDetermined:
+            locationManager.requestWhenInUseAuthorization()
+        case .authorizedWhenInUse, .authorizedAlways:
+            locationManager.requestLocation()
+        case .denied, .restricted:
+            showLocationDeniedAlert()
+            finishCentering()
+        @unknown default:
+            finishCentering()
+        }
+    }
+
+    private func finishCentering() {
+        isCentering = false
+        currentLocationButton.isEnabled = true
+    }
+
+    // MARK: - CLLocationManagerDelegate
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        ensureLocationAuthorizedThenCenter()
+    }
+
+    // iOS 13 호환
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        ensureLocationAuthorizedThenCenter()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        guard let loc = locations.last else {
+            if let fallback = mapView.userLocation.location?.coordinate {
+                centerMap(on: fallback, meters: 300)
+            }
+            finishCentering()
+            return
+        }
+        centerMap(on: loc.coordinate, meters: 300)
+        finishCentering()
+    }
+
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        #if DEBUG
+        print("Location error:", error.localizedDescription)
+        #endif
+        finishCentering()
+    }
+
+    // MARK: - Map helpers
+    private func centerMap(on coordinate: CLLocationCoordinate2D,
+                           meters: CLLocationDistance = 300,
+                           animated: Bool = true) {
+        let region = MKCoordinateRegion(center: coordinate,
+                                        latitudinalMeters: meters,
+                                        longitudinalMeters: meters)
+        mapView.setRegion(region, animated: animated)
+    }
+
+    // MARK: - Alerts
+    private func showLocationDeniedAlert() {
+        let alert = UIAlertController(
+            title: "Location Access Denied",
+            message: "Please enable location access in Settings.",
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Go to Settings", style: .default) { _ in
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        })
+        present(alert, animated: true)
     }
 }

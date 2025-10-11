@@ -11,7 +11,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--City-->
+        <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
                 <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="PARKinPL" customModuleProvider="target" sceneMemberID="viewController">
@@ -61,25 +61,6 @@
                                 <rect key="frame" x="0.0" y="126" width="394" height="535"/>
                                 <standardMapConfiguration key="preferredConfiguration"/>
                             </mapView>
-                            <button opaque="NO" alpha="0.90000000000000002" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="headTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="quh-Mu-8UN">
-                                <rect key="frame" x="310" y="572" width="60" height="60"/>
-                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                                <rect key="contentStretch" x="1" y="1" width="1" height="1"/>
-                                <constraints>
-                                    <constraint firstAttribute="height" constant="60" id="NSB-f9-wTL"/>
-                                    <constraint firstAttribute="width" constant="60" id="wcN-oN-zf2"/>
-                                </constraints>
-                                <color key="tintColor" systemColor="systemPinkColor"/>
-                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
-                                <state key="normal">
-                                    <imageReference key="image" image="location.north.circle" catalog="system" symbolScale="large"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfiguration" configurationType="pointSize" pointSize="34"/>
-                                </state>
-                                <buttonConfiguration key="configuration" style="plain">
-                                    <imageReference key="image" image="location.north.circle" catalog="system" symbolScale="large"/>
-                                    <preferredSymbolConfiguration key="preferredSymbolConfigurationForImage" configurationType="pointSize" pointSize="34"/>
-                                </buttonConfiguration>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6kA-k1-neZ">
                                 <rect key="frame" x="100" y="702" width="193" height="52"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -92,12 +73,24 @@
                                 <state key="normal" title="Search">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
+                                <connections>
+                                    <action selector="searchTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="4qt-me-o7N"/>
+                                </connections>
                             </button>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZGw-uN-fPU" userLabel="Separator View">
                                 <rect key="frame" x="0.0" y="660" width="400" height="2"/>
                                 <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bnJ-nk-RTe">
+                                <rect key="frame" x="302" y="575" width="75" height="35"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Button"/>
+                                <connections>
+                                    <action selector="locateTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="b97-ge-sT6"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -105,37 +98,26 @@
                             <constraint firstItem="ZGw-uN-fPU" firstAttribute="leading" secondItem="Lyx-Nf-DZ7" secondAttribute="leading" id="50F-mE-P9Y"/>
                             <constraint firstItem="mw8-Uz-q0b" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="5zX-2s-E8H"/>
                             <constraint firstItem="Lyx-Nf-DZ7" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="6P1-W3-6nY"/>
-                            <constraint firstItem="ZGw-uN-fPU" firstAttribute="top" secondItem="quh-Mu-8UN" secondAttribute="bottom" constant="28" id="6YI-0r-aav"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="6kA-k1-neZ" secondAttribute="bottom" constant="30" id="Ba6-YA-xlI"/>
                             <constraint firstItem="6kA-k1-neZ" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="100" id="DNf-oI-gUd"/>
                             <constraint firstItem="ohy-wI-29o" firstAttribute="top" secondItem="mw8-Uz-q0b" secondAttribute="top" constant="65" id="Ez5-kb-MIz"/>
                             <constraint firstItem="ZGw-uN-fPU" firstAttribute="trailing" secondItem="ohy-wI-29o" secondAttribute="trailing" id="FkJ-UP-HXz"/>
-                            <constraint firstItem="6kA-k1-neZ" firstAttribute="top" secondItem="ZGw-uN-fPU" secondAttribute="bottom" constant="40" id="GnI-4r-RZt"/>
+                            <constraint firstItem="6kA-k1-neZ" firstAttribute="top" secondItem="ZGw-uN-fPU" secondAttribute="bottom" constant="40" id="LE6-yO-z3G"/>
+                            <constraint firstItem="6kA-k1-neZ" firstAttribute="top" secondItem="Lyx-Nf-DZ7" secondAttribute="bottom" constant="41" id="Lbu-mN-mKq"/>
                             <constraint firstItem="ohy-wI-29o" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="MP4-kS-YNA"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="6kA-k1-neZ" secondAttribute="trailing" constant="100" id="RZ9-AX-xVF"/>
-                            <constraint firstItem="quh-Mu-8UN" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="310" id="ZKi-1m-Z76"/>
                             <constraint firstItem="Lyx-Nf-DZ7" firstAttribute="top" secondItem="ohy-wI-29o" secondAttribute="top" constant="1" id="ju6-c3-v3e"/>
                             <constraint firstItem="Lyx-Nf-DZ7" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="1" id="lm9-gw-Zxh"/>
-                            <constraint firstItem="6kA-k1-neZ" firstAttribute="top" secondItem="Lyx-Nf-DZ7" secondAttribute="bottom" constant="41" id="mF3-fK-suY"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ohy-wI-29o" secondAttribute="trailing" constant="-23" id="ofW-uw-7So"/>
                             <constraint firstItem="mw8-Uz-q0b" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wNV-Xx-onL"/>
                             <constraint firstItem="mw8-Uz-q0b" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="60" id="xcQ-jb-2el"/>
-                            <constraint firstItem="ZGw-uN-fPU" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" constant="660" id="y4L-q4-eYu"/>
+                            <constraint firstItem="ZGw-uN-fPU" firstAttribute="top" secondItem="Lyx-Nf-DZ7" secondAttribute="top" constant="534" id="y4L-q4-eYu"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" title="City" id="NDQ-mR-EyO">
-                        <centerItemGroups>
-                            <barButtonItemGroup customizationDisposition="fixed" id="YHW-Xl-hqc">
-                                <barButtonItems>
-                                    <barButtonItem title="City" id="FhT-pI-d85"/>
-                                </barButtonItems>
-                            </barButtonItemGroup>
-                        </centerItemGroups>
-                    </navigationItem>
                     <connections>
-                        <outlet property="locateButton" destination="quh-Mu-8UN" id="mzK-eV-eOp"/>
-                        <outlet property="mapView" destination="Lyx-Nf-DZ7" id="qu1-ZU-4NX"/>
-                        <outlet property="searchButton" destination="6kA-k1-neZ" id="cTV-OJ-ncU"/>
+                        <outlet property="currentLocationButton" destination="bnJ-nk-RTe" id="9lA-HL-DIP"/>
+                        <outlet property="mapView" destination="Lyx-Nf-DZ7" id="CjC-WQ-Ysb"/>
+                        <outlet property="searchButton" destination="6kA-k1-neZ" id="tPu-da-Dix"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -145,12 +127,8 @@
     </scenes>
     <resources>
         <image name="chevron.compact.down" catalog="system" width="128" height="42"/>
-        <image name="location.north.circle" catalog="system" width="128" height="123"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-        <systemColor name="systemPinkColor">
-            <color red="1" green="0.17647058823529413" blue="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
     </resources>
 </document>

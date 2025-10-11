@@ -148,8 +148,10 @@
 				DEVELOPMENT_TEAM = 2NZ8DM377C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PARKinPL/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your current location is required to check parking availability.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your current location is required to check parking availability.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
@@ -184,8 +186,10 @@
 				DEVELOPMENT_TEAM = 2NZ8DM377C;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PARKinPL/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your current location is required to check parking availability.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Your current location is required to check parking availability.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UILaunchStoryboardName = "";
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 15.6;
