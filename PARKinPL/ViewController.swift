@@ -2,7 +2,7 @@ import UIKit
 import MapKit
 import CoreLocation
 
-class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDelegate {
+class ViewController: UIViewController, MKMapViewDelegate {
 
     @IBOutlet weak var separatorView: UIView!
     @IBOutlet weak var mapView: MKMapView!
@@ -10,9 +10,14 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     @IBOutlet weak var currentLocationButton: UIButton!
     @IBOutlet weak var cityButton: UIButton!
 
-    // MARK: - Location
-    private let locationManager = CLLocationManager()
+    // MARK: - Services
+    private let locationService: LocationService = LocationServiceImpl()
+    private let geocodingService: GeocodingService = GeocodingServiceImpl()
+    private let zoneService: ZoneService = ZoneServiceImpl()
+    
+    // MARK: - State
     private var isCentering = false
+    private var lastKnownLocation: CLLocation?
 
     // MARK: - City
     private let cityList = ["Warsaw", "Kraków", "Wrocław", "Gdańsk", "Poznań"]
@@ -29,9 +34,6 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
 
         mapView.delegate = self
         mapView.showsUserLocation = true
-
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
     }
 
     // MARK: - UI
@@ -78,6 +80,20 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
     // MARK: - Actions
     @IBAction func searchTapped(_ sender: UIButton) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        
+        guard let selectedCity = currentSelectedCity() else {
+            showAlert(title: "No City Selected", message: "Please select a city first.")
+            return
+        }
+        
+        guard let location = lastKnownLocation else {
+            showAlert(title: "No Location", message: "Please tap the location button first.")
+            return
+        }
+        
+        Task {
+            await performSearch(location: location, city: selectedCity)
+        }
     }
 
     @IBAction func locateTapped(_ sender: UIButton) {
@@ -86,29 +102,8 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         currentLocationButton.isEnabled = false
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
 
-        guard CLLocationManager.locationServicesEnabled() else {
-            showLocationDeniedAlert()
-            finishCentering()
-            return
-        }
-
-        let status: CLAuthorizationStatus
-        if #available(iOS 14.0, *) {
-            status = locationManager.authorizationStatus
-        } else {
-            status = CLLocationManager.authorizationStatus()
-        }
-
-        switch status {
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .authorizedWhenInUse, .authorizedAlways:
-            locationManager.requestLocation()
-        case .denied, .restricted:
-            showLocationDeniedAlert()
-            finishCentering()
-        @unknown default:
-            finishCentering()
+        Task {
+            await requestLocationAndCenter()
         }
     }
 
@@ -136,43 +131,65 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
         present(vc, animated: true)
     }
 
-    // MARK: - CLLocationManagerDelegate (그대로)
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        let status = manager.authorizationStatus
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
-            locationManager.requestLocation()
-        } else if status == .denied || status == .restricted {
-            showLocationDeniedAlert()
-            finishCentering()
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
-            locationManager.requestLocation()
-        } else if status == .denied || status == .restricted {
-            showLocationDeniedAlert()
-            finishCentering()
-        }
-    }
-
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let loc = locations.last else {
-            if let fallback = mapView.userLocation.location?.coordinate {
-                centerMap(on: fallback, meters: 300)
+    // MARK: - Location Handling
+    private func requestLocationAndCenter() async {
+        do {
+            let location = try await locationService.requestLocation()
+            lastKnownLocation = location
+            
+            await MainActor.run {
+                centerMap(on: location.coordinate, meters: 300)
+                finishCentering()
             }
-            finishCentering()
-            return
+        } catch {
+            await MainActor.run {
+                handleLocationError(error)
+                finishCentering()
+            }
         }
-        centerMap(on: loc.coordinate, meters: 300)
-        finishCentering()
     }
-
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        #if DEBUG
-        print("Location error:", error.localizedDescription)
-        #endif
-        finishCentering()
+    
+    private func performSearch(location: CLLocation, city: String) async {
+        do {
+            // Get street name from location
+            let streetName = try await geocodingService.getStreetName(from: location)
+            print("[Geocode] Found street: \(streetName)")
+            
+            // Load zones for city
+            let zones = try await zoneService.loadZones(for: city)
+            print("[Service] Loaded \(zones.count) zones for \(city)")
+            
+            // Find matching zone
+            if let matchingZone = zoneService.findZone(for: streetName, in: zones) {
+                print("[Match] Found zone: \(matchingZone.name)")
+                await MainActor.run {
+                    showZoneResult(matchingZone, street: streetName)
+                }
+            } else {
+                await MainActor.run {
+                    showAlert(title: "No Zone Found", message: "No parking zone found for \(streetName) in \(city)")
+                }
+            }
+        } catch {
+            await MainActor.run {
+                showAlert(title: "Search Failed", message: error.localizedDescription)
+            }
+        }
+    }
+    
+    private func handleLocationError(_ error: Error) {
+        if let locationError = error as? LocationError {
+            switch locationError {
+            case .permissionDenied:
+                showLocationDeniedAlert()
+            case .servicesDisabled:
+                showAlert(title: "Location Disabled", message: "Please enable location services in Settings.")
+            case .unknown:
+                showAlert(title: "Location Error", message: "Unable to get your location.")
+            }
+        } else {
+            showAlert(title: "Location Error", message: error.localizedDescription)
+        }
     }
 
     private func centerMap(on coordinate: CLLocationCoordinate2D,
@@ -201,6 +218,34 @@ class ViewController: UIViewController, MKMapViewDelegate, CLLocationManagerDele
                 UIApplication.shared.open(url)
             }
         })
+        present(alert, animated: true)
+    }
+    
+    private func showZoneResult(_ zone: ParkingZone, street: String) {
+        var message = "Street: \(street)\nZone: \(zone.name)"
+        
+        if let hourlyRate = zone.hourlyRate {
+            message += "\nHourly Rate: \(hourlyRate) PLN"
+        }
+        if let dailyRate = zone.dailyRate {
+            message += "\nDaily Rate: \(dailyRate) PLN"
+        }
+        if let description = zone.description {
+            message += "\n\n\(description)"
+        }
+        
+        let alert = UIAlertController(
+            title: "Parking Zone Found",
+            message: message,
+            preferredStyle: .alert
+        )
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
         present(alert, animated: true)
     }
 }

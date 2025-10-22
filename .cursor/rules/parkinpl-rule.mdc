@@ -1,0 +1,61 @@
+---
+name: PARKinPL Project Rules
+description: UIKit iOS app to detect user's parking zone in Poland; MapKit + CoreLocation; MVVM; Service layer (mock → real).
+alwaysApply: true
+---
+
+# Project Rules — PARKinPL (UIKit, iOS-only)
+
+## Overview
+- Goal: Determine the user's **parking zone** by reverse-geocoding current **street** and matching with **city-specific zone data**.
+- Platform: iOS (iPhone), UIKit, iOS 16+ recommended.
+- Architecture: **MVVM** with **Service** layer (mock first, swappable).
+- Maps: **MapKit** (`MKMapView`).  
+- Async: Prefer **async/await**; follow CoreLocation authorization callbacks (no blocking checks on main thread).
+
+## Primary Flow
+1. First launch → system Launch Screen.
+2. Permission:
+   - notDetermined → request When-In-Use.
+   - denied/restricted → alert + Settings deep-link.
+   - authorized → requestLocation() immediately.
+3. Authorized → center map on user; show user location.
+4. City picker (sheet with UIPickerView):
+   - Try **auto-detect city** via reverse-geocoding; preselect if matched.
+   - After selection, city button shows **city name only** (no arrow), keep storyboard font/size/weight.
+5. Search button:
+   - Use lastKnownLocation → reverse-geocode street → match city’s parking data → show zone in alert.
+
+## Location Rules
+- Use `locationManagerDidChangeAuthorization(_:)` (iOS 14+) or legacy callback (iOS 13) to react.
+- Triggers:
+  - onLaunch: auto locate on first appearance if authorized.
+  - onButton: locate when user taps the “locate me” button.
+- On success: update `lastKnownLocation`, center map (~300–600 m).
+- On failure: concise user copy; log details with prefixes.
+
+## Data Model (draft)
+- Local JSON per city (e.g., `zones_krakow.json`, `zones_warsaw.json`).
+- Match by: selected city → its zones → `street ∈ zone.streets` (normalize case/diacritics).
+
+## UI/UX
+- City button:
+  - Initial: `City ▾` (secondaryLabel color).
+  - After selection: `CityName` (label color), **remove arrow**, keep original font traits.
+- Provide haptics `.light` for taps.  
+- Alerts are short and clear; one primary action.
+
+## Errors & Edges
+- Services off / permission denied / geocode fail / no city selected / no zone match → show appropriate alert.
+- Never block UI with synchronous location checks.
+
+## Logging
+- Prefixes: `[VC]`, `[Location]`, `[Geocode]`, `[Match]`, `[Service]`.
+- Log start/success/failure for permission, locate, geocode, match.
+
+## Testing
+- Unit: placemark parsing, string normalization, street-in-zone match.
+- Integration: authorized path shows zone; denied path shows Settings link.
+
+## Out of Scope (v1)
+- Login, payments, background continuous tracking, zone overlays (future).

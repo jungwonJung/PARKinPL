@@ -1,0 +1,40 @@
+{
+  "city": "Warsaw",
+  "zones": [
+    {
+      "name": "Zone A",
+      "streets": [
+        "Krakowskie Przedmieście",
+        "Nowy Świat",
+        "Miodowa",
+        "Freta"
+      ],
+      "hourlyRate": 3.0,
+      "dailyRate": 20.0,
+      "description": "City center - highest rates"
+    },
+    {
+      "name": "Zone B", 
+      "streets": [
+        "Marszałkowska",
+        "Jerozolimskie",
+        "Aleje Jerozolimskie",
+        "Krucza"
+      ],
+      "hourlyRate": 2.0,
+      "dailyRate": 15.0,
+      "description": "Business district"
+    },
+    {
+      "name": "Zone C",
+      "streets": [
+        "Żoliborz",
+        "Mokotów",
+        "Praga"
+      ],
+      "hourlyRate": 1.5,
+      "dailyRate": 10.0,
+      "description": "Residential areas"
+    }
+  ]
+}
