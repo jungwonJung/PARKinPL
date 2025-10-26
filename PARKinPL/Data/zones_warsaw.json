@@ -2,39 +2,129 @@
   "city": "Warsaw",
   "zones": [
     {
-      "name": "Zone A",
+      "name": "Zone I",
       "streets": [
+        "aleja Prymasa Tysiąclecia",
+        "ulica Marcina Kasprzaka",
+        "ulica Juliana Konstantego Ordona",
+        "ulica Wolska",
+        "aleja Obrońców Grodna",
+        "aleja Armii Krajowej",
+        "most gen. Stefana Grota-Roweckiego",
+        "ulica Solec",
+        "ulica Czerniakowska",
+        "ulica Ludwika Idzikowskiego",
+        "ulica Ikara",
+        "ulica Czerniowiecka",
+        "ulica Cieszyńska",
+        "ulica Bukowińska",
+        "ulica Domaniewska",
+        "ulica Zygmunta Modzelewskiego",
+        "ulica Jana Pawła Woronicza",
+        "ulica Wołoska",
+        "ulica Spartańska",
+        "ulica Żwirki i Wigury",
+        "ulica Wilanowska",
+        "ulica Ksawerów",
+        "ulica Marszałkowska",
+        "ulica Nowy Świat",
         "Krakowskie Przedmieście",
-        "Nowy Świat",
-        "Miodowa",
-        "Freta"
-      ],
-      "hourlyRate": 3.0,
-      "dailyRate": 20.0,
-      "description": "City center - highest rates"
-    },
-    {
-      "name": "Zone B", 
-      "streets": [
-        "Marszałkowska",
-        "Jerozolimskie",
+        "ulica Świętokrzyska",
+        "ulica Chmielna",
+        "ulica Hoża",
+        "ulica Wilcza",
+        "ulica Piękna",
         "Aleje Jerozolimskie",
-        "Krucza"
+        "ulica Jana Pawła II",
+        "ulica Emilii Plater",
+        "plac Konstytucji",
+        "ulica Mokotowska",
+        "ulica Puławska",
+        "ulica Myśliwiecka",
+        "ulica Szucha",
+        "ulica Koszykowa",
+        "ulica Noakowskiego"
       ],
-      "hourlyRate": 2.0,
-      "dailyRate": 15.0,
-      "description": "Business district"
+      "hourlyRate": 4.5,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 4.5,
+        "secondHour": 5.4,
+        "thirdHour": 6.4,
+        "fourthAndEachSubsequentHour": 4.5
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "08:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": true,
+      "description": "City Centre, Wola, Mokotów, Ochota, Żoliborz areas",
+      "bounds": {
+        "minLat": 52.17,
+        "maxLat": 52.27,
+        "minLon": 20.90,
+        "maxLon": 21.10
+      }
     },
     {
-      "name": "Zone C",
+      "name": "Zone II",
       "streets": [
-        "Żoliborz",
-        "Mokotów",
-        "Praga"
+        "ulica Stefana Starzyńskiego",
+        "ulica Radzymińska",
+        "ulica Folwarczna",
+        "ulica Kawęczyńska",
+        "ulica Kijowska",
+        "ulica Podskarbińska",
+        "ulica Stanisławowska",
+        "ulica Terespolska",
+        "aleja Jerzego Waszyngtona",
+        "ulica Saska",
+        "aleja Stanów Zjednoczonych",
+        "ulica Afrykańska",
+        "ulica generała Tadeusza Bora Komorowskiego",
+        "ulica generała Stanisława Skalskiego",
+        "ulica Wał Miedzeszyński",
+        "ulica Ząbkowska",
+        "ulica Stalowa",
+        "ulica Targowa",
+        "ulica Brzeska",
+        "ulica Mała",
+        "ulica Wileńska",
+        "ulica Wschodnia",
+        "ulica Wrzesińska",
+        "ulica Grochowska",
+        "ulica Ostrobramska",
+        "ulica Płowiecka",
+        "ulica Chrzanowskiego",
+        "ulica Grenadierów",
+        "ulica Międzynarodowa",
+        "ulica Gocławska",
+        "ulica Skaryszewska",
+        "ulica Saska Kępa",
+        "ulica Walecznych"
       ],
-      "hourlyRate": 1.5,
-      "dailyRate": 10.0,
-      "description": "Residential areas"
+      "hourlyRate": 4.5,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 4.5,
+        "secondHour": 5.4,
+        "thirdHour": 6.4,
+        "fourthAndEachSubsequentHour": 4.5
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "08:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": true,
+      "description": "Praga-Północ and Praga-Południe areas",
+      "bounds": {
+        "minLat": 52.22,
+        "maxLat": 52.28,
+        "minLon": 21.00,
+        "maxLon": 21.18
+      }
     }
   ]
 }

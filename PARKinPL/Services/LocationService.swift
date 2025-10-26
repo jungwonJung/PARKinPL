@@ -1,7 +1,6 @@
 import Foundation
 import CoreLocation
 
-/// Handles all location-related operations
 protocol LocationService {
     func requestLocation() async throws -> CLLocation
     func requestPermission() async -> CLAuthorizationStatus
@@ -10,48 +9,76 @@ protocol LocationService {
 final class LocationServiceImpl: NSObject, LocationService {
     private let locationManager = CLLocationManager()
     private var locationContinuation: CheckedContinuation<CLLocation, Error>?
-    
+    private var permissionContinuation: CheckedContinuation<CLAuthorizationStatus, Never>?
+    private var didRetryLocationUnknown = false
+
     override init() {
         super.init()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        // Core Location APIs should be used on main thread
+        DispatchQueue.main.async {
+            self.locationManager.delegate = self
+            self.locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        }
     }
-    
+
     func requestLocation() async throws -> CLLocation {
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
+            // Save continuation immediately
             self.locationContinuation = continuation
-            
+
             guard CLLocationManager.locationServicesEnabled() else {
                 continuation.resume(throwing: LocationError.servicesDisabled)
+                self.locationContinuation = nil
                 return
             }
-            
-            let status = authorizationStatus
+
+            let status = self.authorizationStatus
             switch status {
             case .authorizedWhenInUse, .authorizedAlways:
-                locationManager.requestLocation()
+                // Safe to request a one-shot location
+                DispatchQueue.main.async { self.locationManager.requestLocation() }
+
             case .notDetermined:
-                locationManager.requestWhenInUseAuthorization()
+                // Wait for permission first, then request location
+                Task { [weak self] in
+                    guard let self else { return }
+                    let newStatus = await self.requestPermission()
+                    switch newStatus {
+                    case .authorizedWhenInUse, .authorizedAlways:
+                        DispatchQueue.main.async { self.locationManager.requestLocation() }
+                    case .denied, .restricted:
+                        continuation.resume(throwing: LocationError.permissionDenied)
+                        self.locationContinuation = nil
+                    default:
+                        continuation.resume(throwing: LocationError.unknown)
+                        self.locationContinuation = nil
+                    }
+                }
+
             case .denied, .restricted:
                 continuation.resume(throwing: LocationError.permissionDenied)
+                self.locationContinuation = nil
+
             @unknown default:
                 continuation.resume(throwing: LocationError.unknown)
+                self.locationContinuation = nil
             }
         }
     }
-    
+
     func requestPermission() async -> CLAuthorizationStatus {
-        return await withCheckedContinuation { continuation in
-            let status = authorizationStatus
+        await withCheckedContinuation { continuation in
+            let status = self.authorizationStatus
             if status == .notDetermined {
-                locationManager.requestWhenInUseAuthorization()
-                // Permission result will be handled in delegate
+                // Store continuation to be resumed in delegate callback
+                self.permissionContinuation = continuation
+                DispatchQueue.main.async { self.locationManager.requestWhenInUseAuthorization() }
             } else {
                 continuation.resume(returning: status)
             }
         }
     }
-    
+
     private var authorizationStatus: CLAuthorizationStatus {
         if #available(iOS 14.0, *) {
             return locationManager.authorizationStatus
@@ -63,19 +90,52 @@ final class LocationServiceImpl: NSObject, LocationService {
 
 // MARK: - CLLocationManagerDelegate
 extension LocationServiceImpl: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        // Resume anyone awaiting permission
+        let status = authorizationStatus
+        permissionContinuation?.resume(returning: status)
+        permissionContinuation = nil
+
+        // If location was already requested and we were waiting for auth,
+        // auto-trigger a request when authorized.
+        if (status == .authorizedWhenInUse || status == .authorizedAlways),
+           locationContinuation != nil {
+            manager.requestLocation()
+        } else if (status == .denied || status == .restricted),
+                  let cont = locationContinuation {
+            cont.resume(throwing: LocationError.permissionDenied)
+            locationContinuation = nil
+        }
+    }
+
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
-        locationContinuation?.resume(returning: location)
+        didRetryLocationUnknown = false
+        guard let cont = locationContinuation else { return }
+        guard let location = locations.last else {
+            cont.resume(throwing: LocationError.unknown)
+            locationContinuation = nil
+            return
+        }
+        cont.resume(returning: location)
         locationContinuation = nil
     }
-    
+
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // Handle the temporary "location unknown" (kCLErrorLocationUnknown, code 0)
+        let nsError = error as NSError
+        if nsError.domain == kCLErrorDomain as String, nsError.code == CLError.locationUnknown.rawValue, didRetryLocationUnknown == false {
+            didRetryLocationUnknown = true
+            // Retry once after a short delay
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) {
+                manager.requestLocation()
+            }
+            return
+        }
+
+        // Propagate other errors
         locationContinuation?.resume(throwing: error)
         locationContinuation = nil
-    }
-    
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        // Handle permission changes if needed
+        didRetryLocationUnknown = false
     }
 }
 
@@ -84,15 +144,13 @@ enum LocationError: LocalizedError {
     case servicesDisabled
     case permissionDenied
     case unknown
-    
+
     var errorDescription: String? {
         switch self {
-        case .servicesDisabled:
-            return "Location services are disabled"
-        case .permissionDenied:
-            return "Location permission denied"
-        case .unknown:
-            return "Unknown location error"
+        case .servicesDisabled: return "Location services are disabled"
+        case .permissionDenied: return "Location permission denied"
+        case .unknown:          return "Unknown location error"
         }
     }
 }
+

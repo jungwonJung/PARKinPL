@@ -146,18 +146,30 @@ class ViewController: UIViewController, MKMapViewDelegate {
     }
     
     private func performSearch(location: CLLocation, city: String) async {
+        print("[Search] Starting search for city: \(city)")
+        print("[Search] Location: lat=\(location.coordinate.latitude), lon=\(location.coordinate.longitude)")
+        
+        // Test: Override with Polish location if in simulator
+        let testLocation = location
+        #if targetEnvironment(simulator)
+        // Use a real Polish location for testing
+        let polishLocation = CLLocation(latitude: 50.0619, longitude: 19.9366) // Kraków Rynek
+        // Uncomment next line to use test location:
+        // let testLocation = polishLocation
+        #endif
+        
         do {
             // Get street address from location
-            let address = try await geocodingService.getStreetName(from: location)
+            let address = try await geocodingService.getStreetName(from: testLocation)
             let streetDisplay = address.streetNumber.map { "\(address.streetName) \($0)" } ?? address.streetName
-            print("[Geocode] Found street: \(streetDisplay)")
+            print("[Geocode] Current location address: \(streetDisplay)")
             
             // Load zones for city
             let zones = try await zoneService.loadZones(for: city)
             print("[Service] Loaded \(zones.count) zones for \(city)")
             
             // Find matching zone
-            if let matchingZone = zoneService.findZone(for: address, in: zones) {
+            if let matchingZone = zoneService.findZone(for: address, at: testLocation, in: zones) {
                 print("[Match] Found zone: \(matchingZone.name)")
                 await MainActor.run {
                     showZoneResult(matchingZone, street: streetDisplay)
@@ -219,20 +231,47 @@ class ViewController: UIViewController, MKMapViewDelegate {
     }
     
     private func showZoneResult(_ zone: ParkingZone, street: String) {
-        var message = "Street: \(street)\nZone: \(zone.name)"
+        var message = "📍 \(street)\n\n"
         
-        if let hourlyRate = zone.hourlyRate {
-            message += "\nHourly Rate: \(hourlyRate) PLN"
+        // Zone
+        message += "🅿️ Zone: \(zone.name)\n\n"
+        
+        // Rates
+        message += "💰 Rates:\n"
+        if let rateDetails = zone.rateDetails {
+            if let first = rateDetails.firstHour {
+                message += "• 1st hour: \(first) PLN\n"
+            }
+            if let second = rateDetails.secondHour {
+                message += "• 2nd hour: \(second) PLN\n"
+            }
+            if let third = rateDetails.thirdHour {
+                message += "• 3rd hour: \(third) PLN\n"
+            }
+            if let additional = rateDetails.eachAdditionalHour {
+                message += "• 4th+: \(additional) PLN each\n"
+            }
+            if let first30 = rateDetails.first30Minutes {
+                message += "• 0-30 min: \(first30) PLN\n"
+            }
+            if let min30_60 = rateDetails.thirtyOneTo60Minutes {
+                message += "• 31-60 min: \(min30_60) PLN\n"
+            }
+        } else if let hourlyRate = zone.hourlyRate {
+            message += "• \(hourlyRate) PLN per hour\n"
         }
-        if let dailyRate = zone.dailyRate {
-            message += "\nDaily Rate: \(dailyRate) PLN"
+        
+        // Operating hours
+        message += "\n⏰ Operating:\n"
+        if let days = zone.operatingDays {
+            message += "• Days: \(days)\n"
         }
-        if let description = zone.description {
-            message += "\n\n\(description)"
+        if let hours = zone.operatingHours {
+            message += "• Time: \(hours.start) - \(hours.end)"
         }
         
         let alert = UIAlertController(
-            title: "Parking Zone Found",
+            title: "Parking Information",
             message: message,
             preferredStyle: .alert
         )
