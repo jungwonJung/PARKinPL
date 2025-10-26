@@ -3,13 +3,18 @@ import CoreLocation
 
 /// Handles reverse geocoding to get street names from coordinates
 protocol GeocodingService {
-    func getStreetName(from location: CLLocation) async throws -> String
+    func getStreetName(from location: CLLocation) async throws -> StreetAddress
+}
+
+struct StreetAddress {
+    let streetName: String
+    let streetNumber: Int?
 }
 
 final class GeocodingServiceImpl: GeocodingService {
     private let geocoder = CLGeocoder()
     
-    func getStreetName(from location: CLLocation) async throws -> String {
+    func getStreetName(from location: CLLocation) async throws -> StreetAddress {
         return try await withCheckedThrowingContinuation { continuation in
             geocoder.reverseGeocodeLocation(location) { placemarks, error in
                 if let error = error {
@@ -23,7 +28,15 @@ final class GeocodingServiceImpl: GeocodingService {
                     return
                 }
                 
-                continuation.resume(returning: streetName)
+                // Parse street number from subThoroughfare (house number)
+                let streetNumber = Int(placemark.subThoroughfare ?? "")
+                
+                let address = StreetAddress(
+                    streetName: streetName,
+                    streetNumber: streetNumber
+                )
+                
+                continuation.resume(returning: address)
             }
         }
     }

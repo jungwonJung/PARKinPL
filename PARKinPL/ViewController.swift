@@ -20,7 +20,7 @@ class ViewController: UIViewController, MKMapViewDelegate {
     private var lastKnownLocation: CLLocation?
 
     // MARK: - City
-    private let cityList = ["Warsaw", "Kraków", "Wrocław", "Gdańsk", "Poznań"]
+    private let cityList = ["Warsaw", "Kraków", "Wrocław", "Katowice", "Gdańsk", "Poznań"]
     private let cityPlaceholderTitle = "City"          // 버튼의 초기 텍스트
     private let arrowImage = UIImage(systemName: "chevron.down") // 커스텀 이미지면 교체
 
@@ -124,10 +124,6 @@ class ViewController: UIViewController, MKMapViewDelegate {
         }
 
         vc.modalPresentationStyle = .pageSheet
-        if let sheet = vc.sheetPresentationController {
-            sheet.detents = [.medium()]
-            sheet.prefersGrabberVisible = true
-        }
         present(vc, animated: true)
     }
 
@@ -151,23 +147,24 @@ class ViewController: UIViewController, MKMapViewDelegate {
     
     private func performSearch(location: CLLocation, city: String) async {
         do {
-            // Get street name from location
-            let streetName = try await geocodingService.getStreetName(from: location)
-            print("[Geocode] Found street: \(streetName)")
+            // Get street address from location
+            let address = try await geocodingService.getStreetName(from: location)
+            let streetDisplay = address.streetNumber.map { "\(address.streetName) \($0)" } ?? address.streetName
+            print("[Geocode] Found street: \(streetDisplay)")
             
             // Load zones for city
             let zones = try await zoneService.loadZones(for: city)
             print("[Service] Loaded \(zones.count) zones for \(city)")
             
             // Find matching zone
-            if let matchingZone = zoneService.findZone(for: streetName, in: zones) {
+            if let matchingZone = zoneService.findZone(for: address, in: zones) {
                 print("[Match] Found zone: \(matchingZone.name)")
                 await MainActor.run {
-                    showZoneResult(matchingZone, street: streetName)
+                    showZoneResult(matchingZone, street: streetDisplay)
                 }
             } else {
                 await MainActor.run {
-                    showAlert(title: "No Zone Found", message: "No parking zone found for \(streetName) in \(city)")
+                    showAlert(title: "No Zone Found", message: "No parking zone found for \(streetDisplay) in \(city)")
                 }
             }
         } catch {

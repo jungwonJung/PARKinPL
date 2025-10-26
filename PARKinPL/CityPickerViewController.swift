@@ -58,6 +58,23 @@ final class CityPickerViewController: UIViewController, UIPickerViewDataSource, 
             pickerView.selectRow(preselectIndex, inComponent: 0, animated: false)
         }
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Configure sheet size before presentation
+        if let sheet = sheetPresentationController {
+            if #available(iOS 16.0, *) {
+                let customDetent = UISheetPresentationController.Detent.custom { context in
+                    return context.maximumDetentValue * 0.3
+                }
+                sheet.detents = [customDetent]
+            } else {
+                sheet.detents = [.medium()]
+            }
+            sheet.prefersGrabberVisible = true
+        }
+    }
 
     @objc private func doneTapped() {
         let row = pickerView.selectedRow(inComponent: 0)

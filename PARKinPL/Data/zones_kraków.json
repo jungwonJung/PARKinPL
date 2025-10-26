@@ -1,0 +1,112 @@
+{
+  "city": "Kraków",
+  "zones": [
+    {
+      "name": "Zone A",
+      "streets": [
+        "Basztowa",
+        "Westerplatte",
+        "Św. Gertrudy",
+        "Św. Idziego",
+        "Podzamcze",
+        "Straszewskiego",
+        "Podwale",
+        "Dunajewskiego",
+        "Zwierzyniecka",
+        "Z. Krasińskiego",
+        "A. Mickiewicza",
+        "Karmelicka",
+        "J. Słowackiego",
+        "Lubicz",
+        "Dietla",
+        "Powiśle",
+        "Marshal F. Focha",
+        "Grunwaldzki",
+        "M. Konopnicka",
+        "Kamieńskiego",
+        "Powstańców Śląskich",
+        "Monte Cassino",
+        "A. Nowaczyńskiego",
+        "Kotlarska",
+        "Mogilska",
+        "Aleksandra Lubomirskiego",
+        "Wita Stwosza"
+      ],
+      "hourlyRate": 6.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 6.0,
+        "eachAdditionalHour": 6.0
+      },
+      "operatingDays": "Monday-Saturday",
+      "operatingHours": {
+        "start": "10:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": true,
+      "description": "City center - highest rates"
+    },
+    {
+      "name": "Zone B",
+      "streets": [
+        "Wrocławska",
+        "Św. Rafała Kalinowskiego",
+        "Kotlarski Bridge area",
+        "Prądnicka",
+        "29 Listopada",
+        "Powstania Warszawskiego"
+      ],
+      "hourlyRate": 5.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 5.0,
+        "eachAdditionalHour": 5.0
+      },
+      "operatingDays": "Monday-Saturday",
+      "operatingHours": {
+        "start": "10:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": true,
+      "description": "Inner city - medium rates"
+    },
+    {
+      "name": "Zone C",
+      "streets": [
+        "Kościuszki",
+        "Królowej Jadwigi",
+        "Piastowska",
+        "Malczewskiego",
+        "Hofmana",
+        "Kudlińskiego",
+        "Czarnowiejska",
+        "Nawojki",
+        "Tkacka",
+        "Podchorążych",
+        "Królewska",
+        "Głowackiego",
+        "Mogilska",
+        "Rakowicka",
+        "Klimeckiego",
+        "Powstańców Wielkopolskich",
+        "Wadowicka",
+        "Brożka",
+        "Kapelanka",
+        "Kobierzyńska"
+      ],
+      "hourlyRate": 4.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 4.0,
+        "eachAdditionalHour": 4.0
+      },
+      "operatingDays": "Monday-Saturday",
+      "operatingHours": {
+        "start": "10:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": true,
+      "description": "Outer areas - lowest rates"
+    }
+  ]
+}

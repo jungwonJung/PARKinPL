@@ -1,0 +1,45 @@
+{
+  "city": "Wrocław",
+  "zones": [
+    {
+      "name": "Stare Miasto",
+      "streets": [
+        "Rynek",
+        "Świdnicka",
+        "Oławska",
+        "Kazimierza Wielkiego",
+        "Kuźnicza",
+        "Piłsudskiego",
+        "Przejście Żelaźnicze"
+      ],
+      "hourlyRate": 3.5,
+      "dailyRate": 22.0,
+      "description": "Main square and historic center"
+    },
+    {
+      "name": "Centrum",
+      "streets": [
+        "Legnicka",
+        "Grabiszyńska",
+        "Legnicka",
+        "Klecińska",
+        "Stawowa"
+      ],
+      "hourlyRate": 2.0,
+      "dailyRate": 15.0,
+      "description": "Central business district"
+    },
+    {
+      "name": "Zona Zewnętrzna",
+      "streets": [
+        "Krakowska",
+        "Grunwaldzki",
+        "Powstańców Śląskich",
+        "Borowska"
+      ],
+      "hourlyRate": 1.5,
+      "dailyRate": 12.0,
+      "description": "Outer residential zones"
+    }
+  ]
+}
