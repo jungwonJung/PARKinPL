@@ -146,15 +146,6 @@ Parking zones are defined in JSON files under `PARKinPL/Data/`:
 
 None. This app uses only Apple's native frameworks.
 
-## 📈 Roadmap
-
-- [ ] Dark mode app icon optimization
-- [ ] Widget support (show nearest zone)
-- [ ] Polish language localization
-- [ ] More cities (Gdańsk, Poznań, etc.)
-- [ ] Historical parking data
-- [ ] Siri Shortcuts integration
-
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
