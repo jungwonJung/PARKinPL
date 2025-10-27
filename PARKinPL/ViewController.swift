@@ -20,20 +20,25 @@ class ViewController: UIViewController, MKMapViewDelegate {
     private var lastKnownLocation: CLLocation?
 
     // MARK: - City
-    private let cityList = ["Warsaw", "Kraków", "Wrocław", "Katowice", "Gdańsk", "Poznań"]
-    private let cityPlaceholderTitle = "City"          // 버튼의 초기 텍스트
-    private let arrowImage = UIImage(systemName: "chevron.down") // 커스텀 이미지면 교체
+    private var cityList: [String] = []
+    private let cityPlaceholderTitle = "City"
+    private let arrowImage = UIImage(systemName: "chevron.down")
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .systemBackground
         styleSearchButton()
 
-        // 초기 City 버튼 모양 구성
         configureCityButtonForPlaceholder()
+        loadAvailableCities()
 
         mapView.delegate = self
         mapView.showsUserLocation = true
+    }
+    
+    private func loadAvailableCities() {
+        cityList = zoneService.getAvailableCities()
+        print("[VC] Loaded \(cityList.count) cities from data files")
     }
 
     // MARK: - UI
@@ -44,34 +49,33 @@ class ViewController: UIViewController, MKMapViewDelegate {
         searchButton.layer.cornerRadius = 14
     }
 
-    /// "City + 화살표" 상태로 세팅 (폰트/사이즈/굵기 등 버튼 원래 속성 그대로 유지)
+    // Configures the city button to show placeholder text with dropdown arrow
     private func configureCityButtonForPlaceholder() {
         cityButton.setTitle(cityPlaceholderTitle, for: .normal)
-        cityButton.setTitleColor(.label, for: .normal)    // 필요 시 .secondaryLabel 로
-        cityButton.setImage(arrowImage, for: .normal)     // 화살표 붙이기
+        cityButton.setTitleColor(.label, for: .normal)
+        cityButton.setImage(arrowImage, for: .normal)
 
-        // iOS 15+ : 이미지 오른쪽, 간격 설정
+        // Image placement on iOS 15+
         if #available(iOS 15.0, *) {
             var config = cityButton.configuration ?? .plain()
             config.imagePlacement = .trailing
             config.imagePadding = 6
             cityButton.configuration = config
         } else {
-            // iOS14 이하 호환: 이미지 오른쪽으로
+            // Fallback for iOS 14
             cityButton.semanticContentAttribute = .forceRightToLeft
             cityButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: 8, bottom: 0, right: -8)
         }
     }
 
-    /// 도시 선택 후: 타이틀만 도시명으로 바꾸고 화살표 이미지는 제거
+    // Updates button after city selection: removes arrow, shows city name
     private func applyCitySelected(_ city: String) {
         cityButton.setTitle(city, for: .normal)
-        cityButton.setImage(nil, for: .normal)            // 화살표 제거
-        cityButton.setTitleColor(.label, for: .normal)    // 색상만 필요 시 조정
-        // 폰트/사이즈/굵기는 버튼의 titleLabel 설정을 건드리지 않았으므로 그대로 유지됩니다.
+        cityButton.setImage(nil, for: .normal)
+        cityButton.setTitleColor(.label, for: .normal)
     }
 
-    /// 현재 선택된 도시 (초기 placeholder면 nil)
+    // Returns selected city, or nil if placeholder is still showing
     private func currentSelectedCity() -> String? {
         let title = cityButton.title(for: .normal) ?? ""
         return (title == cityPlaceholderTitle) ? nil : title
@@ -107,7 +111,6 @@ class ViewController: UIViewController, MKMapViewDelegate {
         }
     }
 
-    /// City 버튼 탭 -> 모달 피커 표시
     @IBAction func cittyButtonTapped(_ sender: UIButton) {
         let vc = CityPickerViewController()
         vc.cityList = cityList
@@ -236,26 +239,16 @@ class ViewController: UIViewController, MKMapViewDelegate {
         // Zone
         message += "🅿️ Zone: \(zone.name)\n\n"
         
-        // Rates
+        // Rates (using unified formatter)
         message += "💰 Rates:\n"
         if let rateDetails = zone.rateDetails {
-            if let first = rateDetails.firstHour {
-                message += "• 1st hour: \(first) PLN\n"
-            }
-            if let second = rateDetails.secondHour {
-                message += "• 2nd hour: \(second) PLN\n"
-            }
-            if let third = rateDetails.thirdHour {
-                message += "• 3rd hour: \(third) PLN\n"
-            }
-            if let additional = rateDetails.eachAdditionalHour {
-                message += "• 4th+: \(additional) PLN each\n"
-            }
-            if let first30 = rateDetails.first30Minutes {
-                message += "• 0-30 min: \(first30) PLN\n"
-            }
-            if let min30_60 = rateDetails.thirtyOneTo60Minutes {
-                message += "• 31-60 min: \(min30_60) PLN\n"
+            let formattedRates = rateDetails.formattedRates()
+            if !formattedRates.isEmpty {
+                for rate in formattedRates {
+                    message += "• \(rate)\n"
+                }
+            } else if let hourlyRate = zone.hourlyRate {
+                message += "• \(hourlyRate) PLN per hour\n"
             }
         } else if let hourlyRate = zone.hourlyRate {
             message += "• \(hourlyRate) PLN per hour\n"

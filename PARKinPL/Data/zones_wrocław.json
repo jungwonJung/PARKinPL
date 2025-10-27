@@ -1,0 +1,152 @@
+{
+  "city": "Wrocław",
+  "zones": [
+    {
+      "name": "Zone A",
+      "streets": [
+        "Grodzka",
+        "Piaskowa",
+        "św. Katarzyny",
+        "bł. Czesława",
+        "Kazimierza Wielkiego",
+        "Nowy Świat",
+        "Rynek",
+        "Świdnicka",
+        "Oławska",
+        "Kuźnicza",
+        "Piłsudskiego"
+      ],
+      "hourlyRate": 7.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 7.0,
+        "secondHour": 7.3,
+        "thirdHour": 7.7,
+        "eachAdditionalHour": 7.0
+      },
+      "operatingDays": "Monday-Sunday",
+      "operatingHours": {
+        "start": "09:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "City center - highest rates, 7 days operation",
+      "bounds": {
+        "minLat": 51.105,
+        "maxLat": 51.115,
+        "minLon": 17.025,
+        "maxLon": 17.040
+      }
+    },
+    {
+      "name": "Zone B",
+      "streets": [
+        "Henryka Sienkiewicza",
+        "kard.Stefana Wyszyńskiego",
+        "Juliusza Słowackiego",
+        "Władysława Jagiełły",
+        "Mostowa",
+        "pl.gen.Józefa Bema",
+        "Księcia Witolda",
+        "Antoniego Cieszyńskiego",
+        "Podwale",
+        "Fosa Miejska"
+      ],
+      "hourlyRate": 5.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 5.0,
+        "secondHour": 5.2,
+        "thirdHour": 5.5,
+        "eachAdditionalHour": 5.0
+      },
+      "operatingDays": "Monday-Sunday",
+      "operatingHours": {
+        "start": "09:00",
+        "end": "20:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "Outer center - medium rates, 7 days operation",
+      "bounds": {
+        "minLat": 51.100,
+        "maxLat": 51.120,
+        "minLon": 17.015,
+        "maxLon": 17.050
+      }
+    },
+    {
+      "name": "Zone C",
+      "streets": [
+        "Grunwaldzka",
+        "Mikołaja Kopernika",
+        "Zygmunta Wróblewskiego",
+        "Andrzeja Wajdy",
+        "Na Grobli",
+        "Szybka",
+        "gen.Romualda Traugutta",
+        "Tadeusza Kościuszki",
+        "Stanisława Chudoby",
+        "Brzeska",
+        "gen.Ignacego Prądzyńskiego",
+        "gen.Kazimierza Pułaskiego",
+        "Hubska",
+        "Boczna",
+        "Bardzka",
+        "Kamienna",
+        "Drukarska",
+        "Sztabowa",
+        "Wiśniowa",
+        "gen. Józefa Hallera",
+        "Tęczowa",
+        "Kolejowa",
+        "Robotnicza",
+        "Nabycińska",
+        "Braniborska",
+        "Strzegomska",
+        "Stacyjna",
+        "Zachodnia",
+        "Inowrocławska",
+        "Długa",
+        "Władysława Reymonta",
+        "Odona Bujwida",
+        "księcia Józefa Poniatowskiego",
+        "Jedności Narodowej",
+        "Namysłowska",
+        "Bolesława Prusa",
+        "Komuny Paryskiej",
+        "Hugona Kołłątaja",
+        "Peronowa",
+        "Grabiszyńska",
+        "Sądowa",
+        "Ślężna",
+        "Borowska",
+        "Gajowicka",
+        "Zaporoska",
+        "Paczkowska",
+        "Jesionowa"
+      ],
+      "hourlyRate": 3.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "firstHour": 3.0,
+        "secondHour": 3.1,
+        "thirdHour": 3.3,
+        "eachAdditionalHour": 3.0
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "09:00",
+        "end": "18:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "Outer areas - lowest rates, weekdays only",
+      "bounds": {
+        "minLat": 51.08,
+        "maxLat": 51.14,
+        "minLon": 16.98,
+        "maxLon": 17.08
+      }
+    }
+  ]
+}
+

@@ -1,0 +1,86 @@
+{
+  "city": "Pszczyna",
+  "zones": [
+    {
+      "name": "Zone A",
+      "streets": [
+        "Warowna",
+        "Garncarska",
+        "Bramkowa",
+        "Strażacka",
+        "Rymarska",
+        "Piekarska",
+        "Bednarska",
+        "Tkacka",
+        "Ratuszowa",
+        "Basztowa",
+        "Bankowa",
+        "Piwowarska"
+      ],
+      "hourlyRate": 4.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "first30Minutes": 2.5,
+        "firstHour": 4.0,
+        "secondHour": 4.5,
+        "thirdHour": 5.0,
+        "eachAdditionalHour": 4.0
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "06:30",
+        "end": "18:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "City center, includes resident-only spaces"
+    },
+    {
+      "name": "Zone B",
+      "streets": [
+        "Poniatowskiego",
+        "Batorego",
+        "3 Maja",
+        "Kościuszki",
+        "Korfantego"
+      ],
+      "hourlyRate": 2.0,
+      "dailyRate": null,
+      "rateDetails": {
+        "first30Minutes": 1.5,
+        "firstHour": 2.0,
+        "secondHour": 2.2,
+        "thirdHour": 2.4,
+        "eachAdditionalHour": 2.0
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "06:30",
+        "end": "18:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "Secondary zone with lower rates"
+    },
+    {
+      "name": "Zone C",
+      "streets": [
+        "Basztowa",
+        "Chrobrego",
+        "Dworcowa",
+        "Wojska Polskiego"
+      ],
+      "hourlyRate": 1.5,
+      "dailyRate": null,
+      "rateDetails": {
+        "each30Minutes": 1.5
+      },
+      "operatingDays": "Monday-Friday",
+      "operatingHours": {
+        "start": "06:30",
+        "end": "18:00"
+      },
+      "bankHolidaysExcluded": false,
+      "description": "Outer zone with flat rate per 30 minutes"
+    }
+  ]
+}
+
