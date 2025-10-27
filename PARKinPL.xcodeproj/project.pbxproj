@@ -149,7 +149,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PARKinPL/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your current location is required to check parking availability.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs location access to determine your parking zone.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "PARKinPL needs your location to identify the parking zone you're in and show you the correct parking rates.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
@@ -187,7 +187,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = PARKinPL/Info.plist;
 				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Your current location is required to check parking availability.";
-				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "This app needs location access to determine your parking zone.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "PARKinPL needs your location to identify the parking zone you're in and show you the correct parking rates.";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
