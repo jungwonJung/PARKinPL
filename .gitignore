@@ -5,6 +5,9 @@
 ## User settings
 xcuserdata/
 
+# Cursor IDE
+.cursor/
+
 ## Obj-C/Swift specific
 *.hmap
 
