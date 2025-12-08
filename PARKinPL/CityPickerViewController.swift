@@ -13,6 +13,8 @@ final class CityPickerViewController: UIViewController, UIPickerViewDataSource, 
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Force light mode regardless of system setting
+        overrideUserInterfaceStyle = .light
         view.backgroundColor = .systemBackground
 
         pickerView.dataSource = self

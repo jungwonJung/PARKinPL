@@ -26,6 +26,8 @@ class ViewController: UIViewController, MKMapViewDelegate {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Force light mode regardless of system setting
+        overrideUserInterfaceStyle = .light
         view.backgroundColor = .systemBackground
         styleSearchButton()
 
@@ -196,6 +198,8 @@ class ViewController: UIViewController, MKMapViewDelegate {
                 showLocationDeniedAlert()
             case .servicesDisabled:
                 showAlert(title: "Location Disabled", message: "Please enable location services in Settings.")
+            case .locationUnknown, .locationUnknownSimulator:
+                showAlert(title: "Location Error", message: locationError.localizedDescription ?? "Unable to get your location.")
             case .unknown:
                 showAlert(title: "Location Error", message: "Unable to get your location.")
             }
